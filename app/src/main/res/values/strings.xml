@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">ESS</string>
+
+    <string name="content_description">image</string>
+    <string name="title_login">LOGIN</string>
+    <string name="et_hint_email_id">Email ID</string>
+    <string name="et_hint_password">Password</string>
+    <string name="lbl_forgot_password">Forgot Password?</string>
+    <string name="btn_lbl_login">Login</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="register"><u>Register</u></string>
+
+
+    <string name="err_msg_enter_first_name">Please enter first name.</string>
+    <string name="err_msg_enter_last_name">Please enter last name.</string>
+    <string name="err_msg_enter_email">Please enter email.</string>
+    <string name="err_msg_enter_password">Please enter password.</string>
+    <string name="err_msg_enter_confirm_password">Please enter confirm password.</string>
+    <string name="err_msg_password_and_confirm_password_mismatch">Password and confirm password do not match.</string>
+    <string name="err_msg_agree_terms_and_conditions">Please agree to the terms and conditions.</string>
+    <string name="registery_succesful">Thanks for registering!</string>
+
+    <string name="please_wait">Please Wait&#8230;</string>
+
+    <string-array name="sri_lanka_districts">
+        <item>Hà Giang</item>
+        <item>Cao Bằng</item>
+        <item>Bắc Kạn</item>
+        <item>Tuyên Quang</item>
+        <item>Vĩnh Phúc</item>
+        <item>Thái Nguyên</item>
+        <item>Lạng Sơn</item>
+        <item>Quảng Ninh</item>
+        <item>Hải Dương</item>
+        <item>Hưng Yên</item>
+        <item>Nam Định</item>
+        <item>Ninh Bình</item>
+        <item>Thanh Hóa</item>
+        <item>Nghệ An</item>
+        <item>Hà Tĩnh</item>
+        <item>Quảng Bình</item>
+        <item>Quảng Trị</item>
+        <item>Thừa Thiên Huế</item>
+        <item>Đà Nẵng</item>
+        <item>Quảng Nam</item>
+        <item>Quảng Ngãi</item>
+        <item>Bình Định</item>
+        <item>Phú Yên</item>
+        <item>Khánh Hòa</item>
+        <item>Ninh Thuận</item>
+        <item>Bình Thuận</item>
+        <item>Gia Lai</item>
+        <item>Kon Tum</item>
+        <item>Đắk Lắk</item>
+        <item>Đắk Nông</item>
+        <item>Lâm Đồng</item>
+        <item>Bình Phước</item>
+        <item>Đồng Nai</item>
+        <item>Bà Rịa - Vũng Tàu</item>
+        <item>TP. Hồ Chí Minh</item>
+        <item>Tiền Giang</item>
+        <item>Vĩnh Long</item>
+        <item>Đồng Tháp</item>
+        <item>An Giang</item>
+        <item>Kiên Giang</item>
+        <item>Hậu Giang</item>
+        <item>Cà Mau</item>
+        <item>Sóc Trăng</item>
+        <item>Bạc Liêu</item>
+        <item>Trà Vinh</item>
+        <item>Hà Nội</item>
+        <item>Hải Phòng</item>
+        <item>Thành phố Hồ Chí Minh</item>
+        <item>Đà Nẵng</item>
+        <item>Cần Thơ</item>
+    </string-array>
+
+</resources>
