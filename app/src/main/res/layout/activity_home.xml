@@ -164,7 +164,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="16dp"
-                    android:text="Cricket Bats"
+                    android:text="Painting Supplies"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -234,7 +234,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="16dp"
-                    android:text="Cricket Shoes"
+                    android:text="Drawing Supplies"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -295,7 +295,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="16dp"
-                    android:text="Cricket Clothes"
+                    android:text="Art Tools"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -390,14 +390,14 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="200dp"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/bat" />
+                                    android:src="@drawable/brushes" />
 
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
                                     android:paddingTop="8dp"
-                                    android:text="Bats"
+                                    android:text="Brushes"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
 
@@ -427,14 +427,14 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="200dp"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/ball" />
+                                    android:src="@drawable/canvas" />
 
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
                                     android:paddingTop="8dp"
-                                    android:text="Balls"
+                                    android:text="Canvas"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
 
@@ -464,14 +464,14 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="200dp"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/pads" />
+                                    android:src="@drawable/paints" />
 
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
                                     android:paddingTop="8dp"
-                                    android:text="Pads"
+                                    android:text="Paints"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
 
@@ -501,14 +501,14 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="200dp"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/gloves" />
+                                    android:src="@drawable/easels" />
 
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
                                     android:paddingTop="8dp"
-                                    android:text="Gloves"
+                                    android:text="Easels"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
 
@@ -538,14 +538,14 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="200dp"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/shoues" />
+                                    android:src="@drawable/palettes" />
 
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
                                     android:paddingTop="8dp"
-                                    android:text="Shoes"
+                                    android:text="Palettes"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
 
@@ -575,14 +575,14 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="200dp"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/clothes" />
+                                    android:src="@drawable/art_paper" />
 
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
                                     android:paddingTop="8dp"
-                                    android:text="Clothes"
+                                    android:text="Art Paper"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
 
@@ -612,14 +612,14 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="200dp"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/gurds2" />
+                                    android:src="@drawable/drawing_sets" />
 
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
                                     android:paddingTop="8dp"
-                                    android:text="Guards"
+                                    android:text="Drawing Sets"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
 
@@ -649,14 +649,14 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="200dp"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/helmets" />
+                                    android:src="@drawable/art_supplies" />
 
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:gravity="center"
                                     android:paddingTop="8dp"
-                                    android:text="Helmets"
+                                    android:text="Art Supplies"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
 
