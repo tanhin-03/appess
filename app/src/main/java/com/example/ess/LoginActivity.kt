@@ -1,9 +1,12 @@
 package com.example.ess
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -12,6 +15,16 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import com.google.firebase.auth.FirebaseAuth
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import okio.IOException
+import org.json.JSONObject
+import kotlin.math.log
 
 class LoginActivity : BaseActivity(), View.OnClickListener {
     private lateinit var email: EditText
@@ -19,6 +32,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     private lateinit var forgotPassword: TextView
     private lateinit var loginButton: Button
     private lateinit var registerButton: TextView
+    private val client = OkHttpClient()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,18 +107,59 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
             val email = email.text.toString().trim { it <= ' ' }
             val password = password.text.toString().trim { it <= ' ' }
 
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                hideProgressDialog()
+            // Create JSON object for request body
+            val jsonObject = JSONObject()
+            jsonObject.put("emailAddress", email)
+            jsonObject.put("accountPassword", password)
 
-                if (task.isSuccessful) {
-                    showErrorSnackBar("You are logged in successfully.", false)
-                    val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
-                    startActivity(intent)
-                    finish() // Optional: Call finish() if you don't want the user to return to the login screen
-                } else {
-                    showErrorSnackBar(task.exception!!.message.toString(), true)
+            val requestBody = jsonObject.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
+
+            // Create request
+            val request = Request.Builder()
+                .url("http://poserdungeon.myddns.me:5000/login")
+                .post(requestBody)
+                .build()
+
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.e("LoginActivity", "Login failed: ${e.message}")
+                    hideProgressDialog()
+                    runOnUiThread {
+                        showErrorSnackBar("Login failed: ${e.message}", true)
+                    }
                 }
-            }
+
+                override fun onResponse(call: Call, response: Response) {
+                    hideProgressDialog()
+                    if (response.isSuccessful) {
+                        val responseData = response.body?.string()
+                        val jsonResponse = JSONObject(responseData)
+                        val token = jsonResponse.getString("token") // Adjust key if needed
+                        Log.v("LoginResponse", "Token: ${token}")
+
+                        // Save token to SharedPreferences
+                        saveAuthToken(token)
+
+                        runOnUiThread {
+                            showErrorSnackBar("You are logged in successfully.", false)
+                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                    } else {
+                        runOnUiThread {
+                            showErrorSnackBar("Login failed: ${response.message}", true)
+                        }
+                    }
+                }
+            })
         }
+    }
+
+    private fun saveAuthToken(token: String) {
+        val sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("authToken", token)
+        editor.apply()
     }
 }

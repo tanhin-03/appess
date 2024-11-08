@@ -1,6 +1,8 @@
 package com.example.ess
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -66,29 +68,38 @@ class DashboardActivity : BaseActivity(), View.OnClickListener {
     private fun saveDistrict() {
         val selectedDistrict = spinnerDistricts.selectedItem.toString()
         val userName = editTextName.text.toString().trim()
-        val user = auth.currentUser
+        val user = getTokenFromSession();
 
         if (user != null) {
-            val userEmail = user.email
-            val userData = hashMapOf(
-                "email" to userEmail,
-                "name" to userName,
-                "district" to selectedDistrict
-            )
+//            val userEmail = user.email
+//            val userData = hashMapOf(
+//                "email" to userEmail,
+//                "name" to userName,
+//                "district" to selectedDistrict
+//            )
+            Toast.makeText(this, "Thank you", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this@DashboardActivity, HomeActivity::class.java)
+            startActivity(intent)
+            finish()
 
-            realtimeDb.reference.child("users").child(user.uid)
-                .setValue(userData)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Thank you", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this@DashboardActivity, HomeActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "Failed to save to Realtime Database", Toast.LENGTH_SHORT).show()
-                }
+//            realtimeDb.reference.child("users").child(user.uid)
+//                .setValue(userData)
+//                .addOnSuccessListener {
+//                    Toast.makeText(this, "Thank you", Toast.LENGTH_SHORT).show()
+//                    val intent = Intent(this@DashboardActivity, HomeActivity::class.java)
+//                    startActivity(intent)
+//                    finish()
+//                }
+//                .addOnFailureListener { e ->
+//                    Toast.makeText(this, "Failed to save to Realtime Database", Toast.LENGTH_SHORT).show()
+//                }
         } else {
             Toast.makeText(this, "User is not logged in", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun getTokenFromSession(): String? {
+        val sharedPreferences: SharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("authToken", null)
     }
 }
