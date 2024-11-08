@@ -14,11 +14,30 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
+import java.util.Locale
 
-class ProfileActivity : AppCompatActivity() {
+data class Profile(
+    val accountId: Int,
+    val fullName: String,
+    val emailAddress: String,
+    val avatar: String,
+    val role: Int,
+    val viewArtworks: List<String>,
+    val balance: Int
+)
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var database: DatabaseReference
+class ProfileActivity : BaseActivity() {
+
+//    private lateinit var auth: FirebaseAuth
+//    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,6 +124,63 @@ class ProfileActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        fetchProfileData()
+    }
+
+    private fun fetchProfileData() {
+        val client = OkHttpClient()
+
+        val request = Request.Builder()
+            .url("http://poserdungeon.myddns.me:5000/profile")
+            .addHeader("Authorization", "Bearer ${getTokenFromSession()}")
+            .build()
+        showProgressDialog(resources.getString(R.string.please_wait))
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                hideProgressDialog()
+                runOnUiThread {
+                    // Handle failure (e.g., show a Toast)
+                    Toast.makeText(this@ProfileActivity, "Failed to load profile", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                hideProgressDialog()
+                if (response.isSuccessful) {
+                    val responseBody = response.body?.string()
+                    responseBody?.let {
+                        val profile = Gson().fromJson(it, Profile::class.java)
+
+                        runOnUiThread {
+                            // Update the UI with fetched data
+                            findViewById<TextView>(R.id.fullName).text = profile.fullName
+                            findViewById<TextView>(R.id.email).text = profile.emailAddress
+                            findViewById<TextView>(R.id.city).text = String.format(Locale.getDefault(), "Balance: %d", profile.balance)
+                        }
+                    }
+                } else {
+                    runOnUiThread {
+                        // Handle unsuccessful response (e.g., show a Toast)
+                        Toast.makeText(this@ProfileActivity, "Failed to load profile: ${response.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun getTokenFromSession(): String? {
+        val sharedPreferences: SharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("authToken", null)
+    }
+
+    private fun clearAuthToken() {
+        val sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        Log.v("LogoutActivity", "Logout Successfully")
+        Toast.makeText(this@ProfileActivity, "Logout successfully!", Toast.LENGTH_SHORT).show()
+        editor.remove("authToken")  // Removes only the authToken key-value pair
+        editor.apply()
     }
 
     // Data class to match Firebase Realtime Database structure
