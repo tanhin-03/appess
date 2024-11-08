@@ -21,6 +21,10 @@
     <string name="registery_succesful">Thanks for registering!</string>
 
     <string name="please_wait">Please Wait&#8230;</string>
+    <string name="posts">Posts</string>
+    <string name="post_title">Post Title</string>
+    <string name="post_description_goes_here">Post description goes here...</string>
+    <string name="post">Post</string>
 
     <string-array name="sri_lanka_districts">
         <item>Hà Giang</item>
