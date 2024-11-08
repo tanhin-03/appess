@@ -142,7 +142,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
 
                         runOnUiThread {
                             showErrorSnackBar("You are logged in successfully.", false)
-                            val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
+                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
                             startActivity(intent)
                             finish()
                         }
