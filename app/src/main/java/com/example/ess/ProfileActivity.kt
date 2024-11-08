@@ -1,10 +1,14 @@
 package com.example.ess
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -14,11 +18,30 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
+import java.util.Locale
+
+data class Profile(
+    val accountId: Int,
+    val fullName: String,
+    val emailAddress: String,
+    val avatar: String,
+    val role: Int,
+    val viewArtworks: List<String>,
+    val balance: Int
+)
 
 class ProfileActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var database: DatabaseReference
+//    private lateinit var auth: FirebaseAuth
+//    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,8 +61,8 @@ class ProfileActivity : AppCompatActivity() {
         val logoutButton: Button = findViewById(R.id.logoutButton)
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottomNavigationView)
 
-        auth = FirebaseAuth.getInstance()
-        database = FirebaseDatabase.getInstance().reference
+//        auth = FirebaseAuth.getInstance()
+//        database = FirebaseDatabase.getInstance().reference
 
         // Set the selected item to Profile
         bottomNavigationView.selectedItemId = R.id.navigation_profile
@@ -49,36 +72,37 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         // Fetch user details from Firebase
-        val currentUser = auth.currentUser
-        currentUser?.let {
-            emailTextView.text = it.email
-
-            val userId = it.uid
-            database.child("users").child(userId).addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
-                    val userData = snapshot.getValue(UserData::class.java)
-                    if (userData != null) {
-                        fullNameTextView.text = userData.name
-                        cityTextView.text = userData.district
-                    }
-                }
-
-                override fun onCancelled(error: com.google.firebase.database.DatabaseError) {
-                    // Handle possible errors
-                }
-            })
-        }
+//        val currentUser = auth.currentUser
+//        currentUser?.let {
+//            emailTextView.text = it.email
+//
+//            val userId = it.uid
+//            database.child("users").child(userId).addValueEventListener(object : ValueEventListener {
+//                override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+//                    val userData = snapshot.getValue(UserData::class.java)
+//                    if (userData != null) {
+//                        fullNameTextView.text = userData.name
+//                        cityTextView.text = userData.district
+//                    }
+//                }
+//
+//                override fun onCancelled(error: com.google.firebase.database.DatabaseError) {
+//                    // Handle possible errors
+//                }
+//            })
+//        }
 
         // Handle logout
         logoutButton.setOnClickListener {
-            auth.signOut()
+//            auth.signOut()
+            clearAuthToken()
             val intent = Intent(this@ProfileActivity, LoginActivity::class.java)
             startActivity(intent)
             finish()
         }
 
         // Handle navigation item selection
-        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+        bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
                     val intent = Intent(this@ProfileActivity, HomeActivity::class.java)
@@ -105,6 +129,61 @@ class ProfileActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        fetchProfileData()
+    }
+
+    private fun fetchProfileData() {
+        val client = OkHttpClient()
+
+        val request = Request.Builder()
+            .url("http://poserdungeon.myddns.me:5000/profile")
+            .addHeader("Authorization", "Bearer ${getTokenFromSession()}")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    // Handle failure (e.g., show a Toast)
+                    Toast.makeText(this@ProfileActivity, "Failed to load profile", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body?.string()
+                    responseBody?.let {
+                        val profile = Gson().fromJson(it, Profile::class.java)
+
+                        runOnUiThread {
+                            // Update the UI with fetched data
+                            findViewById<TextView>(R.id.fullName).text = profile.fullName
+                            findViewById<TextView>(R.id.email).text = profile.emailAddress
+                            findViewById<TextView>(R.id.city).text = String.format(Locale.getDefault(), "Balance: %d", profile.balance)
+                        }
+                    }
+                } else {
+                    runOnUiThread {
+                        // Handle unsuccessful response (e.g., show a Toast)
+                        Toast.makeText(this@ProfileActivity, "Failed to load profile", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        })
+    }
+
+    private fun getTokenFromSession(): String? {
+        val sharedPreferences: SharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("authToken", null)
+    }
+
+    private fun clearAuthToken() {
+        val sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        Log.v("LogoutActivity", "Logout Successfully")
+        Toast.makeText(this@ProfileActivity, "Logout successfully!", Toast.LENGTH_SHORT).show()
+        editor.remove("authToken")  // Removes only the authToken key-value pair
+        editor.apply()
     }
 
     // Data class to match Firebase Realtime Database structure
