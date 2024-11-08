@@ -13,6 +13,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.ess.Models.ProfileResponse
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -28,17 +29,7 @@ import okhttp3.Response
 import java.io.IOException
 import java.util.Locale
 
-data class Profile(
-    val accountId: Int,
-    val fullName: String,
-    val emailAddress: String,
-    val avatar: String,
-    val role: Int,
-    val viewArtworks: List<String>,
-    val balance: Int
-)
-
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity : BaseActivity() {
 
 //    private lateinit var auth: FirebaseAuth
 //    private lateinit var database: DatabaseReference
@@ -140,9 +131,10 @@ class ProfileActivity : AppCompatActivity() {
             .url("http://poserdungeon.myddns.me:5000/profile")
             .addHeader("Authorization", "Bearer ${getTokenFromSession()}")
             .build()
-
+        showProgressDialog(resources.getString(R.string.please_wait))
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
+                hideProgressDialog()
                 runOnUiThread {
                     // Handle failure (e.g., show a Toast)
                     Toast.makeText(this@ProfileActivity, "Failed to load profile", Toast.LENGTH_SHORT).show()
@@ -150,10 +142,11 @@ class ProfileActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call, response: Response) {
+                hideProgressDialog()
                 if (response.isSuccessful) {
                     val responseBody = response.body?.string()
                     responseBody?.let {
-                        val profile = Gson().fromJson(it, Profile::class.java)
+                        val profile = Gson().fromJson(it, ProfileResponse::class.java)
 
                         runOnUiThread {
                             // Update the UI with fetched data
@@ -165,7 +158,7 @@ class ProfileActivity : AppCompatActivity() {
                 } else {
                     runOnUiThread {
                         // Handle unsuccessful response (e.g., show a Toast)
-                        Toast.makeText(this@ProfileActivity, "Failed to load profile", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ProfileActivity, "Failed to load profile: ${response.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

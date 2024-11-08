@@ -29,7 +29,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ProductActivity : AppCompatActivity() {
+class ProductActivity : BaseActivity() {
     private lateinit var retrofit: Retrofit
     private lateinit var apiService: ApiService
     private lateinit var recyclerView: RecyclerView
@@ -75,15 +75,15 @@ class ProductActivity : AppCompatActivity() {
 
         // Thêm dữ liệu test
         val testItems = listOf(
-            Item(1, "Test Item 1", "https://example.com/image1.jpg"),
-            Item(2, "Test Item 2", "https://example.com/image2.jpg"),
-            Item(3, "Test Item 3", "https://example.com/image3.jpg")
+            Item(1, "Test Item 1", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuou9cFxBq8Xyv0HHHCpTa_uqaJOvnGXX_tw&s"),
+            Item(2, "Test Item 2", "https://static.wikia.nocookie.net/gensin-impact/images/f/f3/Klee_Birthday_2023.png/revision/latest/thumbnail/width/360/height/360?cb=20230727041811"),
+            Item(3, "Test Item 3", "https://s1.zerochan.net/Sigewinne.600.4043759.jpg")
         )
         recyclerView.adapter = ProductAdapter(testItems) { item ->
             navigateToCartActivity(
                 productName = item.itemName,
                 productPrice = "VND ${(item.itemId * 1000)}.00",
-                productImageResId = R.drawable.placeholder,
+                productImageUrl = item.imageUrl,
                 productDescription = "Description for ${item.itemName}"
             )
         }
@@ -91,12 +91,14 @@ class ProductActivity : AppCompatActivity() {
 
     private fun loadItems() {
         Log.d("ProductActivity", "Loading items...")
+        showProgressDialog(resources.getString(R.string.please_wait))
         apiService.getItems().enqueue(object : Callback<ItemResponse> {
             override fun onResponse(call: Call<ItemResponse>, response: Response<ItemResponse>) {
                 Log.d("ProductActivity", "Response received: ${response.code()}")
+                hideProgressDialog()
                 if (response.isSuccessful) {
                     response.body()?.let { itemResponse ->
-                        Log.d("ProductActivity", "Items loaded: ${itemResponse.items.size}")
+                        Log.d("ProductActivity", "Items loaded: ${itemResponse.items.toString()}")
                         items = itemResponse.items
                         // Kiểm tra xem items có dữ liệu không
                         if (items.isNotEmpty()) {
@@ -104,7 +106,7 @@ class ProductActivity : AppCompatActivity() {
                                 navigateToCartActivity(
                                     productName = item.itemName,
                                     productPrice = "VND ${(item.itemId * 1000)}.00",
-                                    productImageResId = R.drawable.placeholder,
+                                    productImageUrl = item.imageUrl,
                                     productDescription = "Description for ${item.itemName}"
                                 )
                             }
@@ -123,17 +125,18 @@ class ProductActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<ItemResponse>, t: Throwable) {
+                hideProgressDialog()
                 Log.e("ProductActivity", "API call failed", t)
                 Toast.makeText(this@ProductActivity,
                     "Error loading items: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
-    private fun navigateToCartActivity(productName: String, productPrice: String, productImageResId: Int, productDescription: String) {
+    private fun navigateToCartActivity(productName: String, productPrice: String, productImageUrl: String, productDescription: String) {
         val intent = Intent(this, CartActivity::class.java)
         intent.putExtra("productName", productName)
         intent.putExtra("productPrice", productPrice)
-        intent.putExtra("productImageResId", productImageResId)
+        intent.putExtra("productImageUrl", productImageUrl)
         intent.putExtra("productDescription", productDescription)
         startActivity(intent)
     }
