@@ -1,16 +1,40 @@
 package com.example.ess
 
+//import com.example.ess.models.Item
+//import com.example.ess.models.ItemResponse
+import Item
+import ItemResponse
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.ess.utils.ApiService
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.squareup.picasso.Picasso
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class ProductActivity : AppCompatActivity() {
+    private lateinit var retrofit: Retrofit
+    private lateinit var apiService: ApiService
+    private lateinit var recyclerView: RecyclerView
+    private var items: List<Item> = emptyList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -21,55 +45,90 @@ class ProductActivity : AppCompatActivity() {
             insets
         }
 
+        setupRetrofit()
+        setupViews()
+        setupRecyclerView()
+        loadItems()
+
+    }
+
+    private fun setupRetrofit() {
+        retrofit = Retrofit.Builder()
+            .baseUrl("http://poserdungeon.myddns.me:5000/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        apiService = retrofit.create(ApiService::class.java)
+    }
+
+    private fun setupViews() {
         val backArrow: ImageView = findViewById(R.id.backArrow)
         backArrow.setOnClickListener {
             finish()
         }
-
         setupBottomNavigationView()
+    }
 
-        // Set up click listeners for all Add to Cart buttons
-        findViewById<Button>(R.id.addToCartButton1).setOnClickListener {
-            navigateToCartActivity("White Cricket Balls", "VND 3999.00", R.drawable.b1, "High-quality white cricket balls suitable for professional matches and practice sessions. These balls offer excellent seam retention and durability, ensuring consistent performance. Crafted to meet the standards of professional players, they provide superior swing and spin. Ideal for both indoor and outdoor play, their pristine white color makes them easy to spot. Perfect for cricketers of all levels, from amateurs to pros.")
-        }
+    private fun setupRecyclerView() {
+        recyclerView = findViewById(R.id.productsRecyclerView)
+        recyclerView.layoutManager = GridLayoutManager(this, 2)
 
-        findViewById<Button>(R.id.addToCartButton2).setOnClickListener {
-            navigateToCartActivity("Kokaboora New Bats", "VND 39999.00", R.drawable.b2, "Latest model of Kokaboora bats, designed for optimal performance and durability. Featuring a lightweight yet strong construction, these bats allow for powerful strokes with ease. The ergonomic handle ensures a comfortable grip, reducing fatigue during long innings. Enhanced with cutting-edge technology, they deliver exceptional control and precision. Trusted by professional players worldwide, Kokaboora bats are a top choice for serious cricketers.")
-        }
-
-        findViewById<Button>(R.id.addToCartButton3).setOnClickListener {
-            navigateToCartActivity("DSC New Gloves", "VND 8999.00", R.drawable.g1, "Comfortable and protective DSC gloves, perfect for enhancing your grip and performance. These gloves are crafted with high-quality materials to provide maximum protection against impacts. Their breathable design ensures your hands stay cool and dry during intense matches. The flexible construction allows for unrestricted movement and superior dexterity. Whether batting or fielding, these gloves will help you perform at your best.")
-        }
-
-        findViewById<Button>(R.id.addToCartButton4).setOnClickListener {
-            navigateToCartActivity("Mazoori Helmets", "VND 31999.00", R.drawable.h1, "Sturdy and reliable Mazoori helmets, ensuring maximum safety during play. Designed with a strong outer shell and cushioned interior, these helmets provide excellent impact resistance. The adjustable fit system ensures a secure and comfortable fit for all head sizes. Ventilation features keep you cool and focused, even in the heat of the game. With Mazoori helmets, you can play with confidence knowing your head is well protected.")
-        }
-
-        findViewById<Button>(R.id.addToCartButton5).setOnClickListener {
-            navigateToCartActivity("Kokaboora Shoes", "VND 20999.00", R.drawable.s2, "Ergonomic Kokaboora shoes designed for comfort and agility on the field. These shoes feature a lightweight design that allows for quick movements and enhanced speed. The cushioned sole provides excellent shock absorption, reducing stress on your feet and joints. With a durable construction, they withstand the rigors of intense play. Ideal for cricketers of all levels, these shoes will help you perform at your peak.")
-        }
-
-        findViewById<Button>(R.id.addToCartButton6).setOnClickListener {
-            navigateToCartActivity("White Bottoms", "VND 2999.00", R.drawable.c1, "Classic white cricket bottoms, ideal for both training and official matches. Made from breathable and durable fabric, these bottoms keep you comfortable throughout the game. The flexible waistband ensures a secure fit, allowing for unrestricted movement. Designed to meet professional standards, they offer a sleek and polished look. Whether you're practicing or competing, these cricket bottoms are a must-have.")
-        }
-
-        findViewById<Button>(R.id.addToCartButton7).setOnClickListener {
-            navigateToCartActivity("Cricket Balls 3 Pack", "VND 9999.00", R.drawable.bo1, "Pack of three premium cricket balls, offering great value and performance. These balls are crafted to deliver consistent bounce and flight, making them ideal for all types of play. Their durable construction ensures they withstand repeated use without losing their shape. The bright color makes them easy to spot on the field. Perfect for practice sessions and matches, this pack is a great addition to any cricketer's gear.")
-        }
-
-        findViewById<Button>(R.id.addToCartButton8).setOnClickListener {
-            navigateToCartActivity("CA Helmets", "VND 24999.00", R.drawable.h2, "Top-of-the-line CA helmets, providing excellent protection and comfort. These helmets are designed with a robust outer shell and soft inner padding for superior impact resistance. The adjustable fit system ensures a secure and personalized fit for every player. Ventilation channels keep your head cool and comfortable during intense matches. Trusted by professional cricketers, CA helmets are the ultimate choice for safety and performance.")
-        }
-
-        findViewById<Button>(R.id.addToCartButton9).setOnClickListener {
-            navigateToCartActivity("SG Shoes", "VND 15999.00", R.drawable.s1, "Durable SG shoes, engineered to enhance your performance on the cricket field. These shoes feature a lightweight design for increased speed and agility. The cushioned insole provides comfort and support, reducing fatigue during long games. With a strong and flexible construction, they offer excellent grip on various surfaces. Ideal for cricketers who demand the best, SG shoes help you stay ahead of the competition.")
-        }
-
-        findViewById<Button>(R.id.addToCartButton10).setOnClickListener {
-            navigateToCartActivity("Gray Nicolls Bats", "VND 64999.00", R.drawable.b3, "Professional-grade Gray Nicolls bats, known for their superior craftsmanship and balance. These bats are made from high-quality willow, ensuring powerful and precise strokes. The ergonomic handle provides a comfortable and secure grip, enhancing your control. With a sleek design, they offer both style and performance. Trusted by top cricketers, Gray Nicolls bats are the perfect choice for those serious about their game.")
+        // Thêm dữ liệu test
+        val testItems = listOf(
+            Item(1, "Test Item 1", "https://example.com/image1.jpg"),
+            Item(2, "Test Item 2", "https://example.com/image2.jpg"),
+            Item(3, "Test Item 3", "https://example.com/image3.jpg")
+        )
+        recyclerView.adapter = ProductAdapter(testItems) { item ->
+            navigateToCartActivity(
+                productName = item.itemName,
+                productPrice = "VND ${(item.itemId * 1000)}.00",
+                productImageResId = R.drawable.placeholder,
+                productDescription = "Description for ${item.itemName}"
+            )
         }
     }
 
+    private fun loadItems() {
+        Log.d("ProductActivity", "Loading items...")
+        apiService.getItems().enqueue(object : Callback<ItemResponse> {
+            override fun onResponse(call: Call<ItemResponse>, response: Response<ItemResponse>) {
+                Log.d("ProductActivity", "Response received: ${response.code()}")
+                if (response.isSuccessful) {
+                    response.body()?.let { itemResponse ->
+                        Log.d("ProductActivity", "Items loaded: ${itemResponse.items.size}")
+                        items = itemResponse.items
+                        // Kiểm tra xem items có dữ liệu không
+                        if (items.isNotEmpty()) {
+                            recyclerView.adapter = ProductAdapter(items) { item ->
+                                navigateToCartActivity(
+                                    productName = item.itemName,
+                                    productPrice = "VND ${(item.itemId * 1000)}.00",
+                                    productImageResId = R.drawable.placeholder,
+                                    productDescription = "Description for ${item.itemName}"
+                                )
+                            }
+                            // Thông báo adapter cập nhật dữ liệu
+                            recyclerView.adapter?.notifyDataSetChanged()
+                        } else {
+                            Log.e("ProductActivity", "Items list is empty")
+                        }
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("ProductActivity", "Error response: $errorBody")
+                    Toast.makeText(this@ProductActivity,
+                        "Error: ${response.code()}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ItemResponse>, t: Throwable) {
+                Log.e("ProductActivity", "API call failed", t)
+                Toast.makeText(this@ProductActivity,
+                    "Error loading items: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
     private fun navigateToCartActivity(productName: String, productPrice: String, productImageResId: Int, productDescription: String) {
         val intent = Intent(this, CartActivity::class.java)
         intent.putExtra("productName", productName)
@@ -87,7 +146,6 @@ class ProductActivity : AppCompatActivity() {
 
     private fun setupBottomNavigationView() {
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottomNavigationView)
-
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
@@ -96,7 +154,6 @@ class ProductActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_products -> {
-                    // Already on ProductActivity, do nothing
                     true
                 }
                 R.id.navigation_promotions -> {
@@ -112,5 +169,34 @@ class ProductActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+
+    inner class ProductAdapter(
+        private val items: List<Item>,
+        private val onItemClick: (Item) -> Unit
+    ) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+
+        inner class ProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val productImage: ImageView = view.findViewById(R.id.productImage)
+            val productName: TextView = view.findViewById(R.id.productName)
+            val productPrice: TextView = view.findViewById(R.id.productPrice)
+            val addToCartButton: Button = view.findViewById(R.id.addToCartButton)
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_product, parent, false)
+            return ProductViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
+            val item = items[position]
+            holder.productName.text = item.itemName
+            holder.productPrice.text = "VND ${item.itemId * 1000}.00"
+            Picasso.get().load(item.imageUrl).into(holder.productImage)
+            holder.addToCartButton.setOnClickListener { onItemClick(item) }
+        }
+
+        override fun getItemCount() = items.size
     }
 }
