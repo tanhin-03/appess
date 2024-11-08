@@ -107,8 +107,8 @@ class ProfileActivity : BaseActivity() {
                     finish()
                     true
                 }
-                R.id.navigation_promotions -> {
-                    val intent = Intent(this@ProfileActivity, PromotionsActivity::class.java)
+                R.id.navigation_posts -> {
+                    val intent = Intent(this@ProfileActivity, PostActivity::class.java)
                     startActivity(intent)
                     finish()
                     true

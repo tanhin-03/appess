@@ -729,7 +729,7 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="408dp"
-        android:layout_height="60dp"
+        android:layout_height="70dp"
         app:backgroundTint="@color/ColorThemeOrange"
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/black"

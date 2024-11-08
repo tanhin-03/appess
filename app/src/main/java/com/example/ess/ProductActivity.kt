@@ -159,8 +159,8 @@ class ProductActivity : BaseActivity() {
                 R.id.navigation_products -> {
                     true
                 }
-                R.id.navigation_promotions -> {
-                    val intent = Intent(this, PromotionsActivity::class.java)
+                R.id.navigation_posts -> {
+                    val intent = Intent(this, PostActivity::class.java)
                     startActivity(intent)
                     true
                 }

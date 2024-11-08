@@ -53,7 +53,7 @@ class PromotionsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottomNavigationView)
-        bottomNavigationView.selectedItemId = R.id.navigation_promotions
+        bottomNavigationView.selectedItemId = R.id.navigation_posts
     }
 
     private fun setupBottomNavigationView() {
@@ -71,7 +71,7 @@ class PromotionsActivity : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
-                R.id.navigation_promotions -> {
+                R.id.navigation_posts -> {
                     // Already on PromotionsActivity, do nothing
                     true
                 }
