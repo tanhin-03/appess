@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.squareup.picasso.Picasso
 
 class CartActivity : AppCompatActivity() {
 
@@ -20,8 +21,9 @@ class CartActivity : AppCompatActivity() {
 
         val productName = intent.getStringExtra("productName")
         val productPrice = intent.getStringExtra("productPrice")
-        val productImageResId = intent.getIntExtra("productImageResId", -1)
+//        val productImageResId = intent.getIntExtra("productImageResId", -1)
         val productDescription = intent.getStringExtra("productDescription")
+        val productImageUrl = intent.getStringExtra("productImageUrl")
 
         val productImageView: ImageView = findViewById(R.id.cartProductImage)
         val productNameTextView: TextView = findViewById(R.id.cartProductName)
@@ -29,7 +31,12 @@ class CartActivity : AppCompatActivity() {
         val productDescriptionTextView: TextView = findViewById(R.id.cartProductDescription)
         val buyNowButton: Button = findViewById(R.id.buyNowButton)
 
-        productImageView.setImageResource(productImageResId)
+        Picasso.get()
+            .load(productImageUrl)
+            .placeholder(R.drawable.placeholder)
+            .into(productImageView)
+
+//        productImageView.setImageResource(productImageResId)
         productNameTextView.text = productName
         productPriceTextView.text = productPrice
         productDescriptionTextView.text = productDescription
